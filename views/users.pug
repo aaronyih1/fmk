@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .page-header
+    h3 FMK
+
+  p #{user._id}
+
+
+  //for user in users
+    //img(src=user.profile.website)
+  img(src=users.profile.website) 
+  script.
+    user = !{JSON.stringify(user)};
+    users = !{JSON.stringify(users)};
+    var addToFuck = function(){
+      console.log(user);
+      user.matches.fucks.push(users)
+      
+    }
+  button(onclick='addToFuck()') fuck

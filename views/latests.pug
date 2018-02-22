@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  .page-header
+    h3 All Latests
+
+  p #{latests}
+
+  for late in latests
+    p #{late.title}
