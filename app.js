@@ -147,36 +147,6 @@ app.get('/latests',(req, res) => {
     res.render('latests', { latests: docs });
   });
 });
-app.post('/users', (req, res) => {
-  //res.json();
-  User.findById(req.user.id, (err, user) => {
-    if (err) { return next(err); }
-    User.find((err, docs) => {
-      //res.json(docs);
-      user.matches.fucks.push(JSON.parse(req.body.selectedUser));
-      //res.send(user);
-      //res.json(user);
-      //res.json(user);
-      user.save((err) => {
-        if (err) {
-          if (err.code === 11000) {
-            req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
-            return res.redirect('/account');
-          }
-          return next(err);
-        }
-        //res.send(user);
-        req.flash('success', { msg: 'Profile information has been updated.' });
-        res.redirect('/users');
-      });
-    });
-    });
-    //user.matches.fucks.push();
-  // Latest.find((err, docs) => {
-  //   //res.json(docs);
-  //   res.send("wooooo");
-  // });
-});
 app.get('/users',(req, res) => {
   User.count().exec(function (err, count) {
 
@@ -189,6 +159,48 @@ app.get('/users',(req, res) => {
         // Tada! random user
         res.render('users', { users: result}); 
       })
+  });
+  app.post('/users', (req, res) => {
+    console.log("HELLO");
+    //res.json();
+    User.findById(req.user.id, (err, user) => {
+      if (err) { return next(err); }
+      User.find((err, docs) => {
+        //res.json(docs);
+        function userMatch(userMatch){
+          console.log(userMatch._id);
+          console.log(user._id);
+          return(userMatch._id == user._id);
+        }
+        //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
+        if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
+          //IT's A MATCH! Do accordingly
+        }
+        //console.log(JSON.parse(req.body.selectedUser).matches.fucks);
+        //console.log(user.matches);
+        user.matches.fucks.push(JSON.parse(req.body.selectedUser));
+        //res.send(user);
+        //res.json(user);
+        //res.json(user);
+        user.save((err) => {
+          if (err) {
+            if (err.code === 11000) {
+              req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
+              return res.redirect('/account');
+            }
+            return next(err);
+          }
+          //res.send(user);
+          req.flash('success', { msg: 'Profile information has been updated.' });
+          res.redirect('/users');
+        });
+      });
+      });
+      //user.matches.fucks.push();
+    // Latest.find((err, docs) => {
+    //   //res.json(docs);
+    //   res.send("wooooo");
+    // });
   });
   // app.get('/addFuck', (req,res)=>{
   //   console.log("hey there");
