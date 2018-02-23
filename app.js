@@ -147,6 +147,36 @@ app.get('/latests',(req, res) => {
     res.render('latests', { latests: docs });
   });
 });
+app.post('/users', (req, res) => {
+  //res.json();
+  User.findById(req.user.id, (err, user) => {
+    if (err) { return next(err); }
+    User.find((err, docs) => {
+      //res.json(docs);
+      user.matches.fucks.push(JSON.parse(req.body.selectedUser));
+      //res.send(user);
+      //res.json(user);
+      //res.json(user);
+      user.save((err) => {
+        if (err) {
+          if (err.code === 11000) {
+            req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
+            return res.redirect('/account');
+          }
+          return next(err);
+        }
+        //res.send(user);
+        req.flash('success', { msg: 'Profile information has been updated.' });
+        res.redirect('/users');
+      });
+    });
+    });
+    //user.matches.fucks.push();
+  // Latest.find((err, docs) => {
+  //   //res.json(docs);
+  //   res.send("wooooo");
+  // });
+});
 app.get('/users',(req, res) => {
   User.count().exec(function (err, count) {
 
@@ -157,12 +187,28 @@ app.get('/users',(req, res) => {
     User.findOne().skip(random).exec(
       function (err, result) {
         // Tada! random user
-        res.render('users', { users: result, action: { addToFuck:function(){
-          console.log("hello cholo");
-            return "hello cholo";
-        }} }); 
+        res.render('users', { users: result}); 
       })
-  })
+  });
+  // app.get('/addFuck', (req,res)=>{
+  //   console.log("hey there");
+  //   res.send("heyyyy");
+  //   User.findById(req.user.id, (err, user) => {
+
+  //     if (err) { return next(err); }
+  //     user.save((err) => {
+  //       if (err) {
+  //         if (err.code === 11000) {
+  //           req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
+  //           return res.redirect('/account');
+  //         }
+  //         return next(err);
+  //       }
+  //       req.flash('success', { msg: 'Profile information has been updated.' });
+  //       res.redirect('/');
+  //     });
+  //   });
+  // })
 
   // User.find((err, docs) => {
   //   //res.json(docs);

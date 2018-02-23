@@ -5,9 +5,6 @@ const passport = require('passport');
 const User = require('../models/User');
 //const userController = require('./controllers/user');
 
-exports.addToFuck = (req, res) =>{
-  console.log(req);
-}
 /**
  * GET /login
  * Login page.
