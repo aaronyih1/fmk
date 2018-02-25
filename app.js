@@ -175,10 +175,14 @@ app.get('/users',(req, res) => {
         //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
         if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
           //IT's A MATCH! Do accordingly
+          res.send("IT'S A MATCH");
+        }
+        else{
+          user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
         }
         //console.log(JSON.parse(req.body.selectedUser).matches.fucks);
         //console.log(user.matches);
-        user.matches.fucks.push(JSON.parse(req.body.selectedUser));
+        
         //res.send(user);
         //res.json(user);
         //res.json(user);
@@ -192,7 +196,7 @@ app.get('/users',(req, res) => {
           }
           //res.send(user);
           req.flash('success', { msg: 'Profile information has been updated.' });
-          res.redirect('/users');
+          //res.redirect('/users');
         });
       });
       });
