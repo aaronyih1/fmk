@@ -152,14 +152,20 @@ app.get('/users',(req, res) => {
 
     // Get a random entry
     var random = Math.floor(Math.random() * count)
-
+    console.log(req.user.matches.fucks);
     // Again query all users but only fetch one offset by our random #
-    User.findOne().skip(random).exec(
+    User.findOne({$and: [{ '_id': {"$nin": req.user.matches.fucks}}, { '_id': {"$nin": req.user.matches.marrys}}, { '_id': {"$nin": req.user.matches.kills}}]}).exec(
       function (err, result) {
+        if(result==null){
+          res.send("OUT OF PEOPLE");
+        }
         // Tada! random user
-        res.render('users', { users: result}); 
+        else{
+          res.render('users', { users: result});
+        } 
       })
   });
+
   app.post('/users', (req, res) => {
     console.log("HELLO");
     //res.json();
@@ -172,20 +178,33 @@ app.get('/users',(req, res) => {
           console.log(user._id);
           return(userMatch._id == user._id);
         }
-        //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
-        if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
-          //IT's A MATCH! Do accordingly
-          res.send("IT'S A MATCH");
+        if(req.body.submit_btn == "fuck_btn"){
+          //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
+          if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
+            //IT's A MATCH! Do accordingly
+            res.send("IT'S A MATCH");
+          }
+          else{
+            user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
+          }
+
+        }
+        else if(req.body.submit_btn == "marry_btn"){
+          //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
+          if((JSON.parse(req.body.selectedUser).matches.marrys.find(userMatch)) != undefined){
+            //IT's A MATCH! Do accordingly
+            res.send("IT'S A MATCH");
+          }
+          else{
+            user.matches.marrys.push(JSON.parse(req.body.selectedUser)._id);
+          }
+          
         }
         else{
-          user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
+          user.matches.kills.push(JSON.parse(req.body.selectedUser)._id);
         }
-        //console.log(JSON.parse(req.body.selectedUser).matches.fucks);
-        //console.log(user.matches);
-        
-        //res.send(user);
-        //res.json(user);
-        //res.json(user);
+
+
         user.save((err) => {
           if (err) {
             if (err.code === 11000) {
@@ -196,15 +215,10 @@ app.get('/users',(req, res) => {
           }
           //res.send(user);
           req.flash('success', { msg: 'Profile information has been updated.' });
-          //res.redirect('/users');
+          res.redirect('/users');
         });
       });
       });
-      //user.matches.fucks.push();
-    // Latest.find((err, docs) => {
-    //   //res.json(docs);
-    //   res.send("wooooo");
-    // });
   });
   // app.get('/addFuck', (req,res)=>{
   //   console.log("hey there");

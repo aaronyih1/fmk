@@ -16,6 +16,12 @@ block content
   form(method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
     input(type='hidden', name='selectedUser', value = users)
-    button.btn.btn-primary.btn-reset(type='submit')
+    button.btn.btn-primary.btn-reset(name='submit_btn' type='submit' value='fuck_btn')
       i.fa.fa-keyboard-o
-      | Change Password
+      | FUCK
+    button.btn.btn-primary.btn-reset(name='submit_btn' value='marry_btn' type='submit')
+      i.fa.fa-keyboard-o
+      | MARRY
+    button.btn.btn-primary.btn-reset(name='submit_btn' value='kill_btn' type='submit')
+      i.fa.fa-keyboard-o
+      | KILL
