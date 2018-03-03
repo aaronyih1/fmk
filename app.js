@@ -48,7 +48,16 @@ const passportConfig = require('./config/passport');
 /**
  * Create Express server.
  */
+//var http = require('http');
 const app = express();
+var socket = require('socket.io');
+// var server = http.createServer(app);
+// var io = require('socket.io').listen(server);
+
+// io.on('connection', function(socket){
+//   console.log('a user connected');
+// });
+
 
 /**
  * Connect to MongoDB.
@@ -174,18 +183,22 @@ app.get('/users',(req, res) => {
       User.find((err, docs) => {
         //res.json(docs);
         function userMatch(userMatch){
-          console.log(userMatch._id);
-          console.log(user._id);
-          return(userMatch._id == user._id);
+          console.log("userMatch: "+userMatch);
+          console.log("userMatch ID: "+userMatch._id);
+          console.log("user ID: "+ user._id);
+          return(userMatch == user._id);
         }
         if(req.body.submit_btn == "fuck_btn"){
+          user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
           //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
           if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
             //IT's A MATCH! Do accordingly
-            res.send("IT'S A MATCH");
+            console.log("WOOOOO");
+            //res.send("IT'S A FUCK MATCH");
+            res.redirect('/chat');
           }
           else{
-            user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
+            
           }
 
         }
@@ -193,7 +206,7 @@ app.get('/users',(req, res) => {
           //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
           if((JSON.parse(req.body.selectedUser).matches.marrys.find(userMatch)) != undefined){
             //IT's A MATCH! Do accordingly
-            res.send("IT'S A MATCH");
+            res.send("IT'S A MARRY MATCH");
           }
           else{
             user.matches.marrys.push(JSON.parse(req.body.selectedUser)._id);
@@ -215,11 +228,15 @@ app.get('/users',(req, res) => {
           }
           //res.send(user);
           req.flash('success', { msg: 'Profile information has been updated.' });
-          res.redirect('/users');
+          //res.redirect('/users');
         });
       });
       });
   });
+  app.get('/chat', (req,res)=>{
+    //console.log("hey there");
+    res.render("chat");
+  })
   // app.get('/addFuck', (req,res)=>{
   //   console.log("hey there");
   //   res.send("heyyyy");
@@ -336,9 +353,15 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+var server = app.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
+
+var io = socket(server);
+
+io.on('connection', function(socket){
+  console.log('connection to socket made');
+})
 
 module.exports = app;
