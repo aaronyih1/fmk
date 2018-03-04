@@ -1,14 +1,30 @@
 ul.pages
-	li.chat.page
-		.chatArea
-			ul.messages
-			input.inputMessage(placeholder='Type here...')
-	li.login.page
-		.form
-			h3.title What's your nickname?
-			input.usernameInput(type="text", maxlength="14")
+  li.chat.page
+    div.chatArea
+      ul.messages
+  li.login.page
+    form
+      input#m.usernameInput(type="text", maxlength="14")
+      input(type='submit',value='Submit')
 
 
 script(src="/socket.io/socket.io.js")
+script(src="https://code.jquery.com/jquery-3.3.1.min.js")
 script.
-	var socket = io(http://localhost:8080/chat);
+    $(function () {
+      var socket = io('http://localhost:8080', {transports: ['websocket']});
+      socket.on('connect', function(){
+        console.log("connected on client!");
+        socket.emit('chat message', $('#m').val());
+        $('form').submit(function(){
+        console.log("form submitted");
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+      });
+      socket.on('chat message', function(msg){
+        $('.messages').append($('<li>').text(msg));
+      });
+
+    });

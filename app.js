@@ -362,6 +362,10 @@ var io = socket(server);
 
 io.on('connection', function(socket){
   console.log('connection to socket made');
-})
+  socket.on('chat message', function(msg){
+      io.emit('chat message', msg);
+    });
+
+});
 
 module.exports = app;
