@@ -37,8 +37,12 @@ const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const bookController = require('./controllers/book');
 const latestController = require('./controllers/latest');
+const chatController = require('./controllers/chat');
 const Latest = require('./models/Latest');
 const User = require('./models/User');
+const Conversation = require('./models/Conversation');
+const Message = require('./models/Message');
+
 
 /**
  * API keys and Passport configuration.
@@ -160,7 +164,7 @@ app.get('/users',(req, res) => {
   User.count().exec(function (err, count) {
 
     // Get a random entry
-    var random = Math.floor(Math.random() * count)
+    var random = Math.floor(Math.random() * count);
     console.log(req.user.matches.fucks);
     // Again query all users but only fetch one offset by our random #
     User.findOne({$and: [{ '_id': {"$nin": req.user.matches.fucks}}, { '_id': {"$nin": req.user.matches.marrys}}, { '_id': {"$nin": req.user.matches.kills}}]}).exec(
@@ -236,7 +240,15 @@ app.get('/users',(req, res) => {
   app.get('/chat', (req,res)=>{
     //console.log("hey there");
     res.render("chat");
-  })
+  });
+  app.get('/messages/:recipient', (req,res)=>{
+    //console.log("hey there");
+    res.render("newmessage");
+  });
+
+  app.post('/messages/:recipient', chatController.newConversation);
+
+
   // app.get('/addFuck', (req,res)=>{
   //   console.log("hey there");
   //   res.send("heyyyy");
@@ -361,7 +373,7 @@ var server = app.listen(app.get('port'), () => {
 var io = socket(server);
 
 io.on('connection', function(socket){
-  console.log('connection to socket made');
+  console.log('connection to socket made: ' + socket.id);
   socket.on('chat message', function(msg){
       io.emit('chat message', msg);
     });

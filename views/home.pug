@@ -1,29 +1,28 @@
-ul.pages
-  li.chat.page
-    div.chatArea
-      ul.messages
-      input.inputMessage(placeholder='Type here...')
-  li.login.page
-    form
-      h3.title What's your nickname?
-      input#m.usernameInput(type="text", maxlength="14")
-      input(type='submit',value='Submit')
+extends layout
 
-
-script(src="/socket.io/socket.io.js")
-script(src="https://code.jquery.com/jquery-3.3.1.min.js")
-script.
-    $(function () {
-      var socket = io('http://localhost:8080', {transports: ['websocket']});
-      socket.on('connect', function(){
-        console.log("connected on client!");
-        socket.emit('chat message', $('#m').val());
-        $('form').submit(function(){
-        console.log("form submitted");
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-      })
-
-    });
+block content
+  h1 Hackathon Starter
+  p #{title}
+  p.lead A boilerplate for Node.js web applications.
+  hr
+  .row
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
+    .col-sm-6
+      h2 Heading
+      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+      p
+        a.btn.btn-default(href='#', role='button') View details »
