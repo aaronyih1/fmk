@@ -160,93 +160,17 @@ app.get('/latests',(req, res) => {
     res.render('latests', { latests: docs });
   });
 });
-app.get('/users',(req, res) => {
-  User.count().exec(function (err, count) {
+app.get('/users', userController.getUser);
+app.post('/users', userController.postUser);
+app.get('/chat/:conversationId', chatController.viewConversation);
+app.post('/chat', chatController.sendReply);
+app.get('/messages', chatController.getConversations);
+app.get('/messages/:recipient', (req,res)=>{
+  //console.log("hey there");
+  res.render("newmessage");
+});
 
-    // Get a random entry
-    var random = Math.floor(Math.random() * count);
-    console.log(req.user.matches.fucks);
-    // Again query all users but only fetch one offset by our random #
-    User.findOne({$and: [{ '_id': {"$nin": req.user.matches.fucks}}, { '_id': {"$nin": req.user.matches.marrys}}, { '_id': {"$nin": req.user.matches.kills}}]}).exec(
-      function (err, result) {
-        if(result==null){
-          res.send("OUT OF PEOPLE");
-        }
-        // Tada! random user
-        else{
-          res.render('users', { users: result});
-        } 
-      })
-  });
-
-  app.post('/users', (req, res) => {
-    console.log("HELLO");
-    //res.json();
-    User.findById(req.user.id, (err, user) => {
-      if (err) { return next(err); }
-      User.find((err, docs) => {
-        //res.json(docs);
-        function userMatch(userMatch){
-          console.log("userMatch: "+userMatch);
-          console.log("userMatch ID: "+userMatch._id);
-          console.log("user ID: "+ user._id);
-          return(userMatch == user._id);
-        }
-        if(req.body.submit_btn == "fuck_btn"){
-          user.matches.fucks.push(JSON.parse(req.body.selectedUser)._id);
-          //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
-          if((JSON.parse(req.body.selectedUser).matches.fucks.find(userMatch)) != undefined){
-            //IT's A MATCH! Do accordingly
-            console.log("WOOOOO");
-            //res.send("IT'S A FUCK MATCH");
-            res.redirect('/chat');
-          }
-          else{
-            
-          }
-
-        }
-        else if(req.body.submit_btn == "marry_btn"){
-          //console.log(containsObject(user,JSON.parse(req.body.selectedUser).matches.fucks))
-          if((JSON.parse(req.body.selectedUser).matches.marrys.find(userMatch)) != undefined){
-            //IT's A MATCH! Do accordingly
-            res.send("IT'S A MARRY MATCH");
-          }
-          else{
-            user.matches.marrys.push(JSON.parse(req.body.selectedUser)._id);
-          }
-          
-        }
-        else{
-          user.matches.kills.push(JSON.parse(req.body.selectedUser)._id);
-        }
-
-
-        user.save((err) => {
-          if (err) {
-            if (err.code === 11000) {
-              req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
-              return res.redirect('/account');
-            }
-            return next(err);
-          }
-          //res.send(user);
-          req.flash('success', { msg: 'Profile information has been updated.' });
-          //res.redirect('/users');
-        });
-      });
-      });
-  });
-  app.get('/chat', (req,res)=>{
-    //console.log("hey there");
-    res.render("chat");
-  });
-  app.get('/messages/:recipient', (req,res)=>{
-    //console.log("hey there");
-    res.render("newmessage");
-  });
-
-  app.post('/messages/:recipient', chatController.newConversation);
+app.post('/messages/:recipient', chatController.newConversation);
 
 
   // app.get('/addFuck', (req,res)=>{
@@ -273,7 +197,7 @@ app.get('/users',(req, res) => {
   //   //res.json(docs);
   //   res.render('users', { users: docs });
   // });
-});
+
 // app.get('/latest', latestController.getLatests);
 
 /**

@@ -1,0 +1,8 @@
+extends ./layout
+
+block content
+	for conversation in conversations
+		-var id = conversation[0].conversationId
+		p #{conversation[0].conversationId}
+		p
+			a(href='/chat/'+id) #{conversation[0].body}

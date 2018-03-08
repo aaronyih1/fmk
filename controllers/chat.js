@@ -29,12 +29,21 @@ exports.getConversations = function(req, res, next) {
               return next(err);
             }
             fullConversations.push(message);
+
             if(fullConversations.length === conversations.length) {
-              return res.status(200).json({ conversations: fullConversations });
+              console.log(fullConversations[0][0].body);
+              res.render("messagelist",{ conversations: fullConversations });
             }
           });
       });
+      // console.log(fullConversations);
+      // if(fullConversations.length === conversations.length) {
+      //   res.status(200).json({ conversations: fullConversations });
+      // }
   });
+}
+exports.viewConversation = function(req, res){
+  console.log(req.params.conversationId);
   Message.find({ conversationId: req.params.conversationId })
     .select('createdAt body author')
     .sort('-createdAt')
@@ -47,13 +56,13 @@ exports.getConversations = function(req, res, next) {
         res.send({ error: err });
         return next(err);
       }
+      console.log(messages);
 
-      res.status(200).json({ conversation: messages });
+      res.status(200).render("chat", { conversation: messages });
     });
 }
 
 exports.newConversation = function(req, res, next) {
-  console.log(req.params.recipient);
   if(!req.params.recipient) {
     res.status(422).send({ error: 'Please choose a valid recipient for your message.' });
     return next();
