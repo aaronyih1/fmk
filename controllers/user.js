@@ -10,6 +10,7 @@ const User = require('../models/User');
  * Login page.
  */
 exports.getLogin = (req, res) => {
+  console.log("login req.user: "+req.user);
   if (req.user) {
     return res.redirect('/');
   }
@@ -53,8 +54,9 @@ exports.postLogin = (req, res, next) => {
  * Log out.
  */
 exports.logout = (req, res) => {
-  req.logout();
-  res.redirect('/');
+  req.session.destroy(function (err) {
+    res.redirect('/'); //Inside a callback… bulletproof!
+  });
 };
 
 /**
@@ -302,11 +304,12 @@ exports.postReset = (req, res, next) => {
  * Forgot Password page.
  */
 exports.getUser = (req, res) => {
+  console.log(req.user);
   User.count().exec(function (err, count) {
 
     // Get a random entry
     var random = Math.floor(Math.random() * count);
-    console.log(req.user.matches.fucks);
+    console.log(req.user);
     // Again query all users but only fetch one offset by our random #
     User.findOne({$and: [{ '_id': {"$nin": req.user.matches.fucks}}, { '_id': {"$nin": req.user.matches.marrys}}, { '_id': {"$nin": req.user.matches.kills}}]}).exec(
       function (err, result) {

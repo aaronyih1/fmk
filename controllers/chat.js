@@ -3,7 +3,8 @@ const Conversation = require('../models/Conversation'),
       Message = require('../models/Message'),
       User = require('../models/User');
 
-exports.getConversations = function(req, res, next) {  
+exports.getConversations = function(req, res, next) {
+  console.log(req);  
   // Only return one message from each conversation to display as snippet
   Conversation.find({ participants: req.user._id })
     .select('_id')
@@ -31,7 +32,7 @@ exports.getConversations = function(req, res, next) {
             fullConversations.push(message);
 
             if(fullConversations.length === conversations.length) {
-              console.log(fullConversations[0][0].body);
+              //console.log(fullConversations[0][0].body);
               res.render("messagelist",{ conversations: fullConversations });
             }
           });
@@ -43,7 +44,7 @@ exports.getConversations = function(req, res, next) {
   });
 }
 exports.viewConversation = function(req, res){
-  console.log(req.params.conversationId);
+  //console.log(req.params.conversationId);
   Message.find({ conversationId: req.params.conversationId })
     .select('createdAt body author')
     .sort('-createdAt')
@@ -56,7 +57,7 @@ exports.viewConversation = function(req, res){
         res.send({ error: err });
         return next(err);
       }
-      console.log(messages);
+      //console.log(messages);
 
       res.status(200).render("chat", { conversation: messages });
     });
@@ -101,7 +102,8 @@ exports.newConversation = function(req, res, next) {
   });
 }
 
-exports.sendReply = function(req, res, next) {  
+exports.sendReply = function(req, res, next) { 
+  console.log("send reply triggered"); 
   const reply = new Message({
     conversationId: req.params.conversationId,
     body: req.body.composedMessage,

@@ -163,7 +163,7 @@ app.get('/latests',(req, res) => {
 app.get('/users', userController.getUser);
 app.post('/users', userController.postUser);
 app.get('/chat/:conversationId', chatController.viewConversation);
-app.post('/chat', chatController.sendReply);
+app.post('/chat/:conversationId', chatController.sendReply);
 app.get('/messages', chatController.getConversations);
 app.get('/messages/:recipient', (req,res)=>{
   //console.log("hey there");

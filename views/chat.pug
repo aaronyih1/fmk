@@ -6,13 +6,15 @@ ul.pages
         for messages in conversation
           li= messages.body
   li.login.page
-    form
-      input#m.usernameInput(type="text", maxlength="14")
+    form(id='send-reply', method='POST')
+      input(type='hidden', name='_csrf', value=_csrf)
+      input#m.usernameInput(type="text" name="composedMessage")
       input(type='submit',value='Submit')
 
 
 script(src="/socket.io/socket.io.js")
 script(src="https://code.jquery.com/jquery-3.3.1.min.js")
+
 script.
     $(function () {
       var socket = io('http://localhost:8080', {transports: ['websocket']});
@@ -22,6 +24,13 @@ script.
         $('form').submit(function(){
         console.log("form submitted");
           socket.emit('chat message', $('#m').val());
+          $.ajax({
+            type: "POST",
+            url: "/chat",
+            data: $('#m').val(),
+            success: success,
+            dataType: 'json'
+          });
           $('#m').val('');
           return false;
         });
