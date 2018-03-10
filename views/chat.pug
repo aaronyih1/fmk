@@ -7,7 +7,7 @@ ul.pages
           li= messages.body
   li.login.page
     form(id='send-reply', method='POST')
-      input(type='hidden', name='_csrf', value=_csrf)
+      input(type='hidden', name='_csrf', value=_csrf )
       input#m.usernameInput(type="text" name="composedMessage")
       input(type='submit',value='Submit')
 
@@ -19,24 +19,18 @@ script.
     $(function () {
       var socket = io('http://localhost:8080', {transports: ['websocket']});
       socket.on('connect', function(){
-        console.log("connected on client!");
-        socket.emit('chat message', $('#m').val());
-        $('form').submit(function(){
+      console.log("connected on client!");
+      socket.emit('chat message', $('#m').val());
+      /*$('form').submit(function(event){
+        event.preventDefault();
         console.log("form submitted");
-          socket.emit('chat message', $('#m').val());
-          $.ajax({
-            type: "POST",
-            url: "/chat",
-            data: $('#m').val(),
-            success: success,
-            dataType: 'json'
-          });
-          $('#m').val('');
-          return false;
-        });
-      });
-      socket.on('chat message', function(msg){
-        $('.messages').append($('<li>').text(msg));
-      });
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });*/
+    });
+    socket.on('chat message', function(msg){
+      $('.messages').append($('<li>').text(msg));
+    });
 
     });

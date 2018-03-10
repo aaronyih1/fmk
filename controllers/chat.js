@@ -96,7 +96,7 @@ exports.newConversation = function(req, res, next) {
         return next(err);
       }
 
-      res.status(200).json({ message: 'Conversation started!', conversationId: conversation._id });
+      res.status(200).redirect('/chat/'+conversation._id );
       return next();
     });
   });
@@ -116,7 +116,7 @@ exports.sendReply = function(req, res, next) {
       return next(err);
     }
 
-    res.status(200).json({ message: 'Reply successfully sent!' });
+    res.status(200).redirect("/chat/"+req.params.conversationId);
     return(next);
   });
 }
